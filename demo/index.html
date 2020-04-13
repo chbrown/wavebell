@@ -46,29 +46,34 @@
   var rng = document.getElementById('rng');
   var txt = document.getElementById('txt');
 
-  var bell = new WaveBell();
+  var bell = {state: 'inactive'};
+
+  function initializeBell() {
+    bell = new WaveBell();
+
+    bell.on('wave', function (e) {
+      rng.style.width = (e.value * 100) + '%';
+    });
+    bell.on('start', function () {
+      btn.innerText = 'Stop';
+      txt.innerText = 'Please speak loudly!';
+    });
+    bell.on('stop', function () {
+      btn.innerText = 'Start';
+      txt.innerText = 'Have fun!';
+      console.log(URL.createObjectURL(bell.result));
+    });
+  }
 
   btn.addEventListener('click', function (e) {
     if (bell.state === 'inactive') {
+      initializeBell();
       bell.start(1000 / 25);
     } else {
       bell.stop();
     }
   });
 
-  bell.on('wave', function (e) {
-    rng.style.width = (e.value * 100) + '%';
-  });
-
-  bell.on('start', function () {
-    btn.innerText = 'Stop';
-    txt.innerText = 'Please speak loudly!';
-  });
-  bell.on('stop', function () {
-    btn.innerText = 'Start';
-    txt.innerText = 'Have fun!';
-    console.log(URL.createObjectURL(bell.result));
-  });
   </script>
 </body>
 </html>
